@@ -13,6 +13,7 @@ document.addEventListener("turbolinks:load", function() {
       $("#rel_op").html("");
       $("#cal_op").html("");
       $("#delimiter").html("");
+      $("#string").html("");
       $("#unknow").html("");
   });
   $("#action").click(function(){
@@ -41,6 +42,8 @@ document.addEventListener("turbolinks:load", function() {
         $("#cal_op").append(data.cal_op + "  ");
       if (data.delimiter != null)
         $("#delimiter").append(data.delimiter + "  ");
+      if (data.string != null)
+        $("#string").append(data.string + "  ");
       if (data.unknow != null)
         $("#unknow").append(data.unknow + "  ");
       }
