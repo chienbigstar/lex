@@ -1,1 +1,78 @@
-<html><head> <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script></head><body> <div class="container"> <div class="panel panel-primary"> <div class="panel-heading">Frame</div><div class="panel-body"> <select id="frame" class="form-select"> <option value="1d">1d</option> <option value="4h">4h</option> <option value="1h">1h</option> <option value="15m">15m</option> </select> <button id="go" class="btn btn-info">Go</button> </div></div><div class="panel panel-primary"> <div class="panel-heading">List</div><div class="panel-body" id="result"></div></div><div class="panel panel-primary"> <div class="panel-heading">TMP</div><div class="panel-body"> <textarea rows="5" style="width: 100%;margin: 10px;"></textarea> <textarea rows="5" style="width: 100%;margin: 10px;"></textarea> <textarea rows="5" style="width: 100%;margin: 10px;"></textarea> <textarea rows="5" style="width: 100%;margin: 10px;"></textarea> <textarea rows="5" style="width: 100%;margin: 10px;"></textarea> </div></div></div><script>function addEMA400(data, index){var K=2 / (400 + 1) var item=data[index]; if (data[index - 1].ema) var prevEma=data[index - 1].ema; else{var sum=0; var list400=[] for (var y=0; y < 400; y++){var i2=data[index - y]; list400.push(i2[4]) sum +=parseFloat(i2[4]);}var prevEma=Math.round(sum / 400  10000000) / 10000000;}data[index]['ema400']=(prevEma  K) + (prevEma * (1 - K));}$(document).ready(function (){$('#go').click(async function (){var frame=$('#frame').val() var res=await $.get(`https://api.binance.com/api/v1/exchangeInfo`) var symbols=res.symbols.filter(s=> s.quoteAsset=='BTC') $('#result').text('') for (var s of symbols){var datas=await $.get(`https://www.binance.com/api/v3/uiKlines?limit=1000&symbol=${s.symbol}&interval=${frame}`) if (datas.length < 405) continue addEMA400(datas, datas.length - 1) var latestPrice=datas[datas.length - 1][4] if (latestPrice > datas[datas.length - 1].ema400){$('#result').text($('#result').text() + `${s.symbol}, `)}}})}) </script></body></html>
+
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Frame</div>
+      <div class="panel-body">
+        <select id="frame" class="form-select">
+          <option value="1d">1d</option>
+          <option value="4h">4h</option>
+          <option value="1h">1h</option>
+          <option value="15m">15m</option>
+        </select>
+        <button id="go" class="btn btn-info">Go</button>
+      </div>
+    </div>
+    <div class="panel panel-primary">
+      <div class="panel-heading">List</div>
+      <div class="panel-body" id="result"></div>
+    </div>
+    <div class="panel panel-primary">
+      <div class="panel-heading">TMP</div>
+      <div class="panel-body">
+        <textarea rows="5" style="width: 100%;margin: 10px;"></textarea>
+        <textarea rows="5" style="width: 100%;margin: 10px;"></textarea>
+        <textarea rows="5" style="width: 100%;margin: 10px;"></textarea>
+        <textarea rows="5" style="width: 100%;margin: 10px;"></textarea>
+        <textarea rows="5" style="width: 100%;margin: 10px;"></textarea>
+      </div>
+    </div>
+  </div>
+  <script>
+    function addEMA400(data, index) {
+      var K = 2 / (400 + 1)
+      var item = data[index];
+      if (data[index - 1].ema)
+        var prevEma = data[index - 1].ema;
+      else {
+        var sum = 0;
+        var list400 = []
+        for (var y = 0; y < 400; y++) {
+          var i2 = data[index - y];
+          list400.push(i2[4])
+          sum += parseFloat(i2[4]);
+        }
+        var prevEma = Math.round(sum / 400 * 10000000) / 10000000;
+      }
+      data[index]['ema400'] = (prevEma  K) + (prevEma  (1 - K));
+    }
+    $(document).ready(function () {
+      $('#go').click(async function () {
+        var frame = $('#frame').val()
+        var res = await $.get(`https://api.binance.com/api/v1/exchangeInfo`)
+        var symbols = res.symbols.filter(s => s.quoteAsset == 'BTC')
+        $('#result').text('')
+        for (var s of symbols) {
+          var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=1000&symbol=${s.symbol}&interval=${frame}`)
+          if (datas.length < 405) continue
+          addEMA400(datas, datas.length - 1)
+          var latestPrice = datas[datas.length - 1][4]
+          if (latestPrice > datas[datas.length - 1].ema400) {
+            $('#result').text($('#result').text() + `${s.symbol}, `)
+          }
+        }
+      })
+    })
+
+  </script>
+</body>
+
+</html>
