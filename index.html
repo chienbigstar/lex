@@ -60,7 +60,7 @@
         var symbols = res.symbols.filter(s => s.quoteAsset == 'USDT')
         $('#result').text('')
         for (var s of symbols) {
-          var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=12h`)
+          var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=1d`)
           if (datas.length < 405) continue
           addEMA400(datas, datas.length - 1)
           var latestPrice = datas[datas.length - 1][4]
