@@ -62,11 +62,13 @@
         for (var s of symbols) {
           var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=1d`)
           if (datas.length < 405) continue
-          addEMA400(datas, datas.length - 1)
-          var latestPrice = datas[datas.length - 1][4]
-          if (latestPrice < datas[datas.length - 1].ema400) {
-            $('#result').text($('#result').text() + `${s.symbol}, `)
-          }
+          $('#result').text($('#result').text() + `${s.symbol}, `)
+          
+          //addEMA400(datas, datas.length - 1)
+          //var latestPrice = datas[datas.length - 1][4]
+          //if (latestPrice < datas[datas.length - 1].ema400) {
+            //$('#result').text($('#result').text() + `${s.symbol}, `)
+          //}
         }
       })
     })
