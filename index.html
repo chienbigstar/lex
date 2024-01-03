@@ -11,11 +11,9 @@
     <div class="panel panel-primary">
       <div class="panel-heading">Frame</div>
       <div class="panel-body">
-        <select id="frame" class="form-select" style="display:none">
+        <select id="bucket" class="form-select">
           <option value="1d">1d</option>
-          <option value="4h">4h</option>
-          <option value="1h">1h</option>
-          <option value="15m">15m</option>
+          <option value="1d2d">1d2d</option>
         </select>
         <button id="go" class="btn btn-info">Go</button>
       </div>
@@ -55,20 +53,19 @@
     }
     $(document).ready(function () {
       $('#go').click(async function () {
-        var frame = $('#frame').val()
+        var bucket = $('#bucket').val()
         var res = await $.get(`https://api.binance.com/api/v1/exchangeInfo`)
         var symbols = res.symbols.filter(s => s.quoteAsset == 'USDT')
         $('#result').text('')
         for (var s of symbols) {
           var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=1d`)
-          if (datas.length < 405) continue
-          $('#result').text($('#result').text() + `${s.symbol}, `)
-          
-          //addEMA400(datas, datas.length - 1)
-          //var latestPrice = datas[datas.length - 1][4]
-          //if (latestPrice < datas[datas.length - 1].ema400) {
-            //$('#result').text($('#result').text() + `${s.symbol}, `)
-          //}
+          if (datas.length < 401) continue
+          if(bucket == '1d') {
+            $('#result').text($('#result').text() + `${s.symbol}, `)
+          } else {
+            if((datas.length/2) < 401) continue;
+            $('#result').text($('#result').text() + `${s.symbol}, `)
+          }
         }
       })
     })
