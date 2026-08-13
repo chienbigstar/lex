@@ -63,21 +63,21 @@
                     var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=500&symbol=${s.symbol}&interval=1d`)
                     if(datas.length < 400) continue
                     addEMA400(datas, datas.length - 1)
-                    const lastItem = datas[datas.length - 1]
+                    var lastItem = datas[datas.length - 1]
                     if(Math.abs(lastItem[4] - lastItem['ema400']) < (lastItem['ema400'] * 10 / 100))
                         $('#result').text($('#result').text() + `${s.symbol}, `)
 
                     var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=500&symbol=${s.symbol}&interval=12h`)
                     if(datas.length < 400) continue
                     addEMA400(datas, datas.length - 1)
-                    const lastItem = datas[datas.length - 1]
+                    lastItem = datas[datas.length - 1]
                     if(Math.abs(lastItem[4] - lastItem['ema400']) < (lastItem['ema400'] * 10 / 100))
                         $('#result').text($('#result').text() + `${s.symbol}, `)
 
                     var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=500&symbol=${s.symbol}&interval=6h`)
                     if(datas.length < 400) continue
                     addEMA400(datas, datas.length - 1)
-                    const lastItem = datas[datas.length - 1]
+                    lastItem = datas[datas.length - 1]
                     if(Math.abs(lastItem[4] - lastItem['ema400']) < (lastItem['ema400'] * 10 / 100))
                         $('#result').text($('#result').text() + `${s.symbol}, `)
                 }
