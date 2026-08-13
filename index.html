@@ -58,7 +58,7 @@
             try {
                 var bucket = $('#bucket').val()
                 var res = await $.get(`https://api.binance.com/api/v1/exchangeInfo`)
-                var symbols = res.symbols.filter(s => s.quoteAsset == 'USDT')
+                var symbols = res.symbols.filter(s => s.quoteAsset == 'USDT' && s.status=="TRADING")
                 $('#result').text('')
                 for (var s of symbols) {
                     var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=900&symbol=${s.symbol}&interval=1d`)
