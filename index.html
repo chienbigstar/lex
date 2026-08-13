@@ -12,6 +12,7 @@
             <div class="panel-heading">Frame</div>
             <div class="panel-body">
                 <select id="bucket" class="form-select">
+                    <option value="change">change</option>
                     <option value="row">raw</option>
                     <option value="1d">1d</option>
                     <option value="1d2d">1d2d</option>
@@ -59,18 +60,26 @@
                 var symbols = res.symbols.filter(s => s.quoteAsset == 'USDT')
                 $('#result').text('')
                 for (var s of symbols) {
-                    var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=1d`)
-                    if(bucket == 'raw') {
+                    var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=500&symbol=${s.symbol}&interval=1d`)
+                    if(datas.length < 400) continue
+                    addEMA400(datas, datas.length - 1)
+                    const lastItem = datas[datas.length - 1]
+                    if(Math.abs(lastItem[4] - lastItem['ema400']) < (lastItem['ema400'] * 10 / 100))
                         $('#result').text($('#result').text() + `${s.symbol}, `)
-                        continue
-                    }
-                    if (datas.length < 401) continue
-                    if (bucket == '1d') {
+
+                    var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=500&symbol=${s.symbol}&interval=12h`)
+                    if(datas.length < 400) continue
+                    addEMA400(datas, datas.length - 1)
+                    const lastItem = datas[datas.length - 1]
+                    if(Math.abs(lastItem[4] - lastItem['ema400']) < (lastItem['ema400'] * 10 / 100))
                         $('#result').text($('#result').text() + `${s.symbol}, `)
-                    } else {
-                        if ((datas.length / 2) < 401) continue;
+
+                    var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=500&symbol=${s.symbol}&interval=6h`)
+                    if(datas.length < 400) continue
+                    addEMA400(datas, datas.length - 1)
+                    const lastItem = datas[datas.length - 1]
+                    if(Math.abs(lastItem[4] - lastItem['ema400']) < (lastItem['ema400'] * 10 / 100))
                         $('#result').text($('#result').text() + `${s.symbol}, `)
-                    }
                 }
             })
         })
