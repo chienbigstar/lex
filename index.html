@@ -63,7 +63,7 @@
                 for (var s of symbols) {
                     var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=900&symbol=${s.symbol}&interval=1d`)
                     if(datas.length > 420 && datas.length < 100) continue;
-
+                    $('#result').text($('#result').text() + `${s.symbol}, `)
                 }
             } catch(e) {alert(e)}
             })
