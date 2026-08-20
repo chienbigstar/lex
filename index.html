@@ -46,6 +46,7 @@
         }
         $(document).ready(function () {
             $('#go').click(async function () {
+                alert('start')
                 try {
                     var bucket = $('#bucket').val()
                     var res = await $.get(`https://api.binance.com/api/v1/exchangeInfo`)
