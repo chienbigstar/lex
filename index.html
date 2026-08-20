@@ -24,6 +24,7 @@
         </div>
     </div>
     <script>
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
         function addEMA400(data, index) {
             var K = 2 / (400 + 1)
             var item = data[index];
@@ -50,6 +51,7 @@
                 $('#result').text('')
                 for (var s of symbols) {
                     try{
+                    await sleep(3000)
                     if(s.symbol == 'ROBOUSDT') continue
                     var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=900&symbol=${s.symbol}&interval=1d`)
                     if(datas.length > 420 || datas.length < 100) continue;
