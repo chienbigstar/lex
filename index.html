@@ -7,15 +7,13 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="col-sm-12">
         <div class="panel panel-primary">
             <div class="panel-heading">Frame</div>
-            <div class="panel-body">
-                <select id="bucket" class="form-select">
-                    <option value="change">change</option>
-                    <option value="row">raw</option>
-                    <option value="1d">1d</option>
-                    <option value="1d2d">1d2d</option>
+            <div class="panel-body" style="display: flex;">
+                <select id="bucket" class="form-select" style="height: 50px; width: 100px; font-size: 24px;">
+                    <option value="chien">chien</option>
+                    <option value="thuy">thuy</option>
                 </select>
                 <button id="go" class="btn btn-info" style="width: 100px; height: 50px; margin-left: 20px;">Go</button>
             </div>
@@ -44,11 +42,83 @@
             }
             data[index]['ema400'] = (prevEma * K) + (prevEma * (1 - K));
         }
+        async function thuy() {
+            alert('start thuy')
+            var res = await $.get(`https://api.binance.com/api/v1/exchangeInfo`)
+            var symbols = res.symbols.filter(s => s.quoteAsset == 'USDT' && s.status == "TRADING").reverse()
+            $('#result').text('')
+            const percentIncrea = (candel) => {
+                const open = parseFloat(candel[1])
+                const close = parseFloat(candel[4])
+                if(close <= open) return 0;
+                const high = parseFloat(candel[2])
+                const low = parseFloat(candel[3])
+                console.log((high - low)/low)
+                return (high - low)/low
+            }
+            const nearLow = (candel, lowVal) => {
+                const currVal = parseFloat(candel[4])
+                const per = Math.abs(currVal - lowVal) / lowVal
+                console.log(per)
+                return per < 0.1
+            }
+            for (var s of symbols) {
+                if (s.symbol != 'SOPHUSDT') continue
+                try{
+                var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=100&symbol=${s.symbol}&interval=1d`)
+                const candle1 = datas[datas.length - 1]
+                const candle2 = datas[datas.length - 2]
+                const candle3 = datas[datas.length - 3]
+                const candle4 = datas[datas.length - 4]
+                const candle5 = datas[datas.length - 5]
+                const candle6 = datas[datas.length - 6]
+                if(percentIncrea(candle1) > 0.25 && nearLow(candle1, parseFloat(candle1[3]))) {
+                    console.log('candle1')
+                    $('#result').text($('#result').text() + `${s.symbol}, `)
+                    continue
+                }
+                if(percentIncrea(candle2) > 0.25 && nearLow(candle1, parseFloat(candle2[3]))
+                ) {
+                    console.log('candle2')
+                    $('#result').text($('#result').text() + `${s.symbol}, `)
+                    continue
+                }
+                if(percentIncrea(candle3) > 0.25 && nearLow(candle1, parseFloat(candle3[3]))
+                ) {
+                    console.log('candle3')
+                    $('#result').text($('#result').text() + `${s.symbol}, `)
+                    continue
+                }
+                if(percentIncrea(candle4) > 0.25 && nearLow(candle1, parseFloat(candle4[3]))
+                ) {
+                    console.log('candle4')
+                    $('#result').text($('#result').text() + `${s.symbol}, `)
+                    continue
+                }
+                if(percentIncrea(candle5) > 0.25 && nearLow(candle1, parseFloat(candle5[3]))
+                ) {
+                    console.log('candle5')
+                    $('#result').text($('#result').text() + `${s.symbol}, `)
+                    continue
+                }
+                if(percentIncrea(candle6) > 0.25 && nearLow(candle1, parseFloat(candle6[3]))
+                ) {
+                    console.log('candle6')
+                    $('#result').text($('#result').text() + `${s.symbol}, `)
+                    continue
+                }
+                } catch(e){}
+            }
+        }
         $(document).ready(function () {
             $('#go').click(async function () {
-                alert('start')
+                const bucket = $('#bucket').val()
+                if(bucket == 'thuy') {
+                    thuy()
+                    return
+                }
+                alert('start chien')
                 try {
-                    var bucket = $('#bucket').val()
                     var res = await $.get(`https://api.binance.com/api/v1/exchangeInfo`)
                     var symbols = res.symbols.filter(s => s.quoteAsset == 'USDT' && s.status == "TRADING").reverse()
                     $('#result').text('')
