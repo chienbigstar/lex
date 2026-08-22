@@ -63,7 +63,7 @@
                 return per < 0.1
             }
             for (var s of symbols) {
-                if (s.symbol != 'SOPHUSDT') continue
+                // if (s.symbol != 'SOPHUSDT') continue
                 try{
                 var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=100&symbol=${s.symbol}&interval=1d`)
                 const candle1 = datas[datas.length - 1]
