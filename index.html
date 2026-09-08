@@ -126,7 +126,29 @@
                         try {
                             // if (s.symbol == 'ROBOUSDT') continue
                             var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=900&symbol=${s.symbol}&interval=1d`)
-                            if (datas.length > 420 || datas.length < 100) continue;
+                            if (datas.length > 820 || datas.length < 100) continue;
+                            if (datas.length > 405) {
+                                datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=1d`)
+                                for (let i = datas.length - 1; i >= 200; i--) {
+                                    addEMA400(datas, i)
+                                    if (datas[i].ema400 > 0 && (datas[i].ema400 < parseFloat(datas[i][4]))) {
+                                        var priceOpen = parseFloat(datas[i][1])
+                                        for (let x = i - 1; x >= 0; x--) {
+                                            if (parseFloat(datas[x][1]) <= priceOpen) priceOpen = parseFloat(datas[x][1])
+                                            else break;
+                                        }
+                                        let pass = true
+                                        for (let x = i + 1; x < datas.length - 1; x++) {
+                                            if (parseFloat(datas[x][4]) < priceOpen) {
+                                                pass = false
+                                                break
+                                            }
+                                        }
+                                        if (pass) $('#result').text($('#result').text() + `${s.symbol}, `)
+                                        break
+                                    }
+                                }
+                            }
                             if (datas.length > 205) {
                                 datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=12h`)
                                 for (let i = datas.length - 1; i >= 200; i--) {
