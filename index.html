@@ -62,51 +62,27 @@
                 console.log(per)
                 return per < 0.1
             }
+            const candelGreen = (data) => {
+                return parseFloat(data[4]) >= parseFloat(data[1])
+            }
             for (var s of symbols) {
                 // if (s.symbol != 'SOPHUSDT') continue
                 try{
-                var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=100&symbol=${s.symbol}&interval=1d`)
-                const candle1 = datas[datas.length - 1]
-                const candle2 = datas[datas.length - 2]
-                const candle3 = datas[datas.length - 3]
-                const candle4 = datas[datas.length - 4]
-                const candle5 = datas[datas.length - 5]
-                const candle6 = datas[datas.length - 6]
-                if(percentIncrea(candle1) > 0.25 && nearLow(candle1, parseFloat(candle1[3]))) {
-                    console.log('candle1')
-                    $('#result').text($('#result').text() + `${s.symbol}, `)
-                    continue
-                }
-                if(percentIncrea(candle2) > 0.25 && nearLow(candle1, parseFloat(candle2[3]))
-                ) {
-                    console.log('candle2')
-                    $('#result').text($('#result').text() + `${s.symbol}, `)
-                    continue
-                }
-                if(percentIncrea(candle3) > 0.25 && nearLow(candle1, parseFloat(candle3[3]))
-                ) {
-                    console.log('candle3')
-                    $('#result').text($('#result').text() + `${s.symbol}, `)
-                    continue
-                }
-                if(percentIncrea(candle4) > 0.25 && nearLow(candle1, parseFloat(candle4[3]))
-                ) {
-                    console.log('candle4')
-                    $('#result').text($('#result').text() + `${s.symbol}, `)
-                    continue
-                }
-                if(percentIncrea(candle5) > 0.25 && nearLow(candle1, parseFloat(candle5[3]))
-                ) {
-                    console.log('candle5')
-                    $('#result').text($('#result').text() + `${s.symbol}, `)
-                    continue
-                }
-                if(percentIncrea(candle6) > 0.25 && nearLow(candle1, parseFloat(candle6[3]))
-                ) {
-                    console.log('candle6')
-                    $('#result').text($('#result').text() + `${s.symbol}, `)
-                    continue
-                }
+                    var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=100&symbol=${s.symbol}&interval=1d`)
+                    // const candle5 = datas[datas.length - 1]
+                    const candle4 = datas[datas.length - 1]
+                    const candle3 = datas[datas.length - 2]
+                    const candle2 = datas[datas.length - 3]
+                    const candle1 = datas[datas.length - 4]
+                    if(candelGreen(candle1) && candelGreen(candle2) && candelGreen(candle3) && candelGreen(candle4) &&
+                        // parseFloat(candle5) >= parseFloat(candle4) &&
+                        parseFloat(candle4) >= parseFloat(candle3) &&
+                        parseFloat(candle3) >= parseFloat(candle2) &&
+                        parseFloat(candle2) >= parseFloat(candle1)
+                    ) {
+                        $('#result').text($('#result').text() + `${s.symbol}, `)
+                        continue
+                    }
                 } catch(e){}
             }
         }
@@ -128,7 +104,7 @@
                             var datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=900&symbol=${s.symbol}&interval=1d`)
                             if (datas.length > 820 || datas.length < 100) continue;
                             if (datas.length > 405) {
-                                datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=1d`)
+                                // datas = await $.get(`https://www.binance.com/api/v3/uiKlines?limit=10000&symbol=${s.symbol}&interval=1d`)
                                 for (let i = datas.length - 1; i >= 200; i--) {
                                     addEMA400(datas, i)
                                     if (datas[i].ema400 > 0 && (datas[i].ema400 < parseFloat(datas[i][4]))) {
